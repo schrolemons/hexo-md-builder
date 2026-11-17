@@ -1,0 +1,22 @@
+name: Skill package
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive the selected commit
+        run: |
+          git archive --format=zip --prefix=skill/ --output=skill.zip HEAD
+          sha256sum skill.zip > skill.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skill-${{ github.sha }}
+          path: |
+            skill.zip
+            skill.zip.sha256
+          retention-days: 14
